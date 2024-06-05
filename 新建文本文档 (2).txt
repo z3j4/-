@@ -1,0 +1,13 @@
+def audioAndVideo(audioFile, videoFile) :
+    outfile_name = './output.mp4'
+    cmd = fr'F:\CommonApp\ffmpeg\bin\ffmpeg.exe -i {audioFile} -i {videoFile} -acodec copy -vcodec copy {outfile_name}'
+    # print(cmd)
+    subprocess.call(cmd, shell=True)
+
+
+
+
+
+
+ 'user-agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.44'
+    }

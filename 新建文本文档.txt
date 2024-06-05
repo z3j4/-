@@ -1,62 +1,53 @@
-8.4——8.8.8.9
-
-
-
-
-
-
-
-
-FileExample
-
-
-
-public class FileExample {
-    public static void main(String[] args) {
-        String fileName = "example.txt";
-        
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            fos.write("Hello, World!".getBytes());
-            fos.close();
-            
-            FileInputStream fis = new FileInputStream(fileName);
-            int data;
-            while ((data = fis.read()) != -1) {
-                System.out.print((char)data);
-            }
-            fis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+import requests
+import re
+import json
+import pprint
+import subprocess
+# 定义函数askURL，用于发送请求并获取响应
+def askURL(url) :
+    head = {
+        'referer' : 'https://www.bilibili.com/',
+        'user-agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.44'
     }
-}
+    response = requests.get(url=url, headers=head)
+    return response
+# 定义函数getVideoInfo，用于获取视频信息
+def getVideoInfo(response) :
+    findUrl = re.compile('<script>window.__playinfo__=(.*?)</script>')
+    VideoInfo = re.findall(findUrl, response.text)[0]
+    jsonData = json.loads(VideoInfo)
+    return jsonData
+# 定义函数download，用于下载音频和视频文件
+def download(jsonData) :
+    audioURL = jsonData['data']['dash']['audio'][0]['baseUrl']
+    videoURL = jsonData['data']['dash']['video'][0]['baseUrl']
+    # print(audioURL)
+    # print(videoURL)
+    audioContent = askURL(audioURL).content
+    with open('./python教程.mp3', mode='wb') as f :
+        f.write(audioContent)
+    videoContent = askURL(videoURL).content
+    with open('./python教程.mp4', mode='wb') as f :
+        f.write(videoContent)
+# 定义函数audioAndVideo，用于将音频和视频文件合并成一个视频文件
+def audioAndVideo(audioFile, videoFile) :
+    outfile_name = './output.mp4'
+    cmd = fr'F:\CommonApp\ffmpeg\bin\ffmpeg.exe -i {audioFile} -i {videoFile} -acodec copy -vcodec copy {outfile_name}'
+    # print(cmd)
+    subprocess.call(cmd, shell=True)
+# 定义main函数，执行程序的主要逻辑
+def main() :
+    html = askURL(url='https://www.bilibili.com/video/BV1GF411c7dA')
+    jsonData = getVideoInfo(html)
+    pprint.pprint(jsonData)  # 使用pprint模块打印JSON数据，使其更易于阅读和理解
+    download(jsonData)  # 调用download函数下载音频和视频文件
+    audioAndVideo('./python教程.mp3', './python教程.mp4')  # 调用audioAndVideo函数将音频和视频文件合并成一个视频文件
 
+    pprint.pprint(jsonData)
+    download(jsonData)
+    audioAndVideo(r'C:\Users\腻味\Desktop\VideoClawer\BiliBiliClawer\python教程.mp3',
+                  r'C:\Users\腻味\Desktop\VideoClawer\BiliBiliClawer\python教程.mp4')
+pass
 
-
-
-
-import java.io.*;
-
-public class FileExample {
-    public static void main(String[] args) {
-        String fileName = "example.txt";
-        
-        try {
-            
-            FileWriter writer = new FileWriter(fileName);
-            writer.write("Hello, World!");
-            writer.close();
-            
-         
-            FileReader reader = new FileReader(fileName);
-            int data;
-            while ((data = reader.read()) != -1) {
-                System.out.print((char)data);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
+if __name__ == '__main__' :
+    main()
