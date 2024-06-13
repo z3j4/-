@@ -1,0 +1,77 @@
+
+class Animal:
+    def __init__(self, name, species, age, habitat):
+        self.name = name
+        self.species = species
+        self.age = age
+        self.habitat = habitat
+
+    def __str__(self):
+        return f"{self.name}, {self.species}, {self.age}, {self.habitat}"
+
+class Aquarium:
+    def __init__(self):
+        self.animals = []
+
+    def add_animal(self, animal):
+        self.animals.append(animal)
+        print(f"{animal.name} 已添加到海洋馆。")
+
+    def remove_animal(self, animal):
+        if animal in self.animals:
+            self.animals.remove(animal)
+            print(f"{animal.name} 已从海洋馆移除。")
+        else:
+            print("动物不在海洋馆中。")
+
+    def find_animal(self, name):
+        for animal in self.animals:
+            if animal.name == name:
+                return animal
+        return None
+
+    def display_animals(self):
+        for animal in self.animals:
+            print(animal)
+
+aquarium = Aquarium()
+
+while True:
+    print("欢迎使用海洋馆管理系统")
+    print("请选择操作：")
+    print("1. 添加动物")
+    print("2. 移除动物")
+    print("3. 查找动物")
+    print("4. 显示所有动物")
+    print("5. 退出")
+
+    choice = input("请输入选项：")
+
+    if choice == "1":
+        name = input("请输入动物名字：")
+        species = input("请输入动物种类：")
+        age = int(input("请输入动物年龄："))
+        habitat = input("请输入动物栖息地：")
+        animal = Animal(name, species, age, habitat)
+        aquarium.add_animal(animal)
+    elif choice == "2":
+        name = input("请输入要移除的动物名字：")
+        animal = aquarium.find_animal(name)
+        if animal:
+            aquarium.remove_animal(animal)
+        else:
+            print("动物不存在。")
+    elif choice == "3":
+        name = input("请输入要查找的动物名字：")
+        animal = aquarium.find_animal(name)
+        if animal:
+            print(f"找到 {animal}")
+        else:
+            print("动物未找到。")
+    elif choice == "4":
+        aquarium.display_animals()
+    elif choice == "5":
+        print("谢谢使用，再见！")
+        break
+    else:
+        print("无效选项，请重新选择。")
